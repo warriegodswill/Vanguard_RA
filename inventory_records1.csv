@@ -1,0 +1,232 @@
+date,product,units_sold_pos,units_depleted_inventory
+2025-06-01,Bottled Water (crate),11,11
+2025-06-01,Cooking Oil 5L,11,11
+2025-06-01,Detergent 1kg,7,7
+2025-06-01,Milk Powder 400g,9,9
+2025-06-01,Rice 50kg,7,7
+2025-06-01,Soft Drinks (crate),4,4
+2025-06-01,Spaghetti (carton),3,3
+2025-06-01,Sugar 1kg,7,7
+2025-06-02,Bottled Water (crate),8,8
+2025-06-02,Cooking Oil 5L,8,8
+2025-06-02,Detergent 1kg,8,8
+2025-06-02,Milk Powder 400g,13,13
+2025-06-02,Rice 50kg,8,8
+2025-06-02,Soft Drinks (crate),4,3
+2025-06-02,Spaghetti (carton),10,10
+2025-06-02,Sugar 1kg,11,11
+2025-06-03,Bottled Water (crate),6,6
+2025-06-03,Cooking Oil 5L,6,6
+2025-06-03,Detergent 1kg,8,8
+2025-06-03,Milk Powder 400g,9,9
+2025-06-03,Rice 50kg,18,18
+2025-06-03,Soft Drinks (crate),9,9
+2025-06-03,Spaghetti (carton),5,5
+2025-06-03,Sugar 1kg,15,15
+2025-06-04,Bottled Water (crate),25,23
+2025-06-04,Cooking Oil 5L,3,3
+2025-06-04,Detergent 1kg,6,6
+2025-06-04,Milk Powder 400g,8,8
+2025-06-04,Rice 50kg,7,7
+2025-06-04,Soft Drinks (crate),12,12
+2025-06-04,Spaghetti (carton),3,2
+2025-06-04,Sugar 1kg,15,14
+2025-06-05,Bottled Water (crate),8,8
+2025-06-05,Cooking Oil 5L,8,7
+2025-06-05,Detergent 1kg,11,11
+2025-06-05,Milk Powder 400g,9,9
+2025-06-05,Rice 50kg,16,16
+2025-06-05,Soft Drinks (crate),7,7
+2025-06-05,Spaghetti (carton),12,12
+2025-06-05,Sugar 1kg,6,9
+2025-06-06,Bottled Water (crate),7,7
+2025-06-06,Cooking Oil 5L,15,15
+2025-06-06,Detergent 1kg,16,16
+2025-06-06,Milk Powder 400g,1,1
+2025-06-06,Rice 50kg,24,24
+2025-06-06,Soft Drinks (crate),13,13
+2025-06-06,Spaghetti (carton),8,8
+2025-06-07,Bottled Water (crate),9,9
+2025-06-07,Cooking Oil 5L,20,20
+2025-06-07,Detergent 1kg,16,15
+2025-06-07,Milk Powder 400g,7,7
+2025-06-07,Soft Drinks (crate),3,3
+2025-06-07,Spaghetti (carton),11,11
+2025-06-07,Sugar 1kg,9,9
+2025-06-08,Bottled Water (crate),6,6
+2025-06-08,Cooking Oil 5L,17,17
+2025-06-08,Detergent 1kg,17,19
+2025-06-08,Milk Powder 400g,2,2
+2025-06-08,Rice 50kg,7,6
+2025-06-08,Soft Drinks (crate),4,4
+2025-06-08,Spaghetti (carton),17,17
+2025-06-08,Sugar 1kg,8,8
+2025-06-09,Bottled Water (crate),15,15
+2025-06-09,Cooking Oil 5L,4,4
+2025-06-09,Detergent 1kg,2,2
+2025-06-09,Milk Powder 400g,4,4
+2025-06-09,Rice 50kg,9,9
+2025-06-09,Soft Drinks (crate),19,19
+2025-06-09,Spaghetti (carton),12,12
+2025-06-09,Sugar 1kg,2,2
+2025-06-10,Bottled Water (crate),15,18
+2025-06-10,Cooking Oil 5L,4,3
+2025-06-10,Detergent 1kg,12,12
+2025-06-10,Milk Powder 400g,10,10
+2025-06-10,Rice 50kg,13,13
+2025-06-10,Soft Drinks (crate),17,17
+2025-06-10,Spaghetti (carton),6,6
+2025-06-10,Sugar 1kg,7,10
+2025-06-11,Bottled Water (crate),10,10
+2025-06-11,Cooking Oil 5L,5,5
+2025-06-11,Detergent 1kg,10,10
+2025-06-11,Milk Powder 400g,8,8
+2025-06-11,Rice 50kg,11,11
+2025-06-11,Soft Drinks (crate),6,6
+2025-06-11,Spaghetti (carton),18,18
+2025-06-11,Sugar 1kg,1,1
+2025-06-12,Bottled Water (crate),9,9
+2025-06-12,Cooking Oil 5L,10,10
+2025-06-12,Milk Powder 400g,2,2
+2025-06-12,Rice 50kg,8,8
+2025-06-12,Soft Drinks (crate),13,13
+2025-06-12,Spaghetti (carton),13,16
+2025-06-12,Sugar 1kg,9,9
+2025-06-13,Bottled Water (crate),22,22
+2025-06-13,Cooking Oil 5L,17,17
+2025-06-13,Detergent 1kg,3,3
+2025-06-13,Milk Powder 400g,6,6
+2025-06-13,Rice 50kg,9,9
+2025-06-13,Soft Drinks (crate),9,8
+2025-06-13,Spaghetti (carton),12,12
+2025-06-13,Sugar 1kg,12,12
+2025-06-14,Bottled Water (crate),9,9
+2025-06-14,Cooking Oil 5L,13,13
+2025-06-14,Detergent 1kg,2,0
+2025-06-14,Milk Powder 400g,8,8
+2025-06-14,Rice 50kg,7,7
+2025-06-14,Soft Drinks (crate),12,12
+2025-06-14,Spaghetti (carton),14,14
+2025-06-14,Sugar 1kg,10,10
+2025-06-15,Bottled Water (crate),4,4
+2025-06-15,Cooking Oil 5L,16,16
+2025-06-15,Detergent 1kg,11,11
+2025-06-15,Milk Powder 400g,4,4
+2025-06-15,Rice 50kg,12,12
+2025-06-15,Soft Drinks (crate),15,15
+2025-06-15,Spaghetti (carton),9,9
+2025-06-15,Sugar 1kg,4,4
+2025-06-16,Bottled Water (crate),13,13
+2025-06-16,Cooking Oil 5L,15,15
+2025-06-16,Detergent 1kg,10,10
+2025-06-16,Rice 50kg,4,4
+2025-06-16,Soft Drinks (crate),2,2
+2025-06-16,Spaghetti (carton),10,10
+2025-06-16,Sugar 1kg,21,21
+2025-06-17,Bottled Water (crate),22,22
+2025-06-17,Cooking Oil 5L,13,13
+2025-06-17,Detergent 1kg,10,10
+2025-06-17,Rice 50kg,8,8
+2025-06-17,Soft Drinks (crate),13,13
+2025-06-17,Spaghetti (carton),7,7
+2025-06-17,Sugar 1kg,13,13
+2025-06-18,Bottled Water (crate),14,14
+2025-06-18,Cooking Oil 5L,8,8
+2025-06-18,Detergent 1kg,16,16
+2025-06-18,Milk Powder 400g,9,9
+2025-06-18,Rice 50kg,6,6
+2025-06-18,Soft Drinks (crate),7,8
+2025-06-18,Spaghetti (carton),19,19
+2025-06-18,Sugar 1kg,7,7
+2025-06-19,Bottled Water (crate),4,4
+2025-06-19,Cooking Oil 5L,10,12
+2025-06-19,Detergent 1kg,13,13
+2025-06-19,Milk Powder 400g,10,11
+2025-06-19,Rice 50kg,10,10
+2025-06-19,Soft Drinks (crate),8,8
+2025-06-19,Spaghetti (carton),3,3
+2025-06-19,Sugar 1kg,7,7
+2025-06-20,Cooking Oil 5L,9,9
+2025-06-20,Detergent 1kg,8,8
+2025-06-20,Milk Powder 400g,12,13
+2025-06-20,Rice 50kg,6,6
+2025-06-20,Soft Drinks (crate),6,6
+2025-06-20,Spaghetti (carton),22,22
+2025-06-20,Sugar 1kg,11,11
+2025-06-21,Bottled Water (crate),7,7
+2025-06-21,Cooking Oil 5L,4,4
+2025-06-21,Detergent 1kg,5,8
+2025-06-21,Milk Powder 400g,19,19
+2025-06-21,Rice 50kg,5,5
+2025-06-21,Soft Drinks (crate),16,16
+2025-06-21,Spaghetti (carton),7,7
+2025-06-21,Sugar 1kg,16,16
+2025-06-22,Bottled Water (crate),13,13
+2025-06-22,Cooking Oil 5L,6,6
+2025-06-22,Detergent 1kg,7,9
+2025-06-22,Rice 50kg,9,9
+2025-06-22,Soft Drinks (crate),15,15
+2025-06-22,Spaghetti (carton),12,12
+2025-06-22,Sugar 1kg,4,4
+2025-06-23,Bottled Water (crate),3,3
+2025-06-23,Cooking Oil 5L,22,22
+2025-06-23,Detergent 1kg,8,9
+2025-06-23,Rice 50kg,3,3
+2025-06-23,Soft Drinks (crate),16,16
+2025-06-23,Spaghetti (carton),12,12
+2025-06-23,Sugar 1kg,15,15
+2025-06-24,Bottled Water (crate),12,12
+2025-06-24,Cooking Oil 5L,6,6
+2025-06-24,Detergent 1kg,10,10
+2025-06-24,Milk Powder 400g,13,13
+2025-06-24,Rice 50kg,4,4
+2025-06-24,Soft Drinks (crate),15,15
+2025-06-24,Spaghetti (carton),4,5
+2025-06-24,Sugar 1kg,13,13
+2025-06-25,Bottled Water (crate),13,12
+2025-06-25,Cooking Oil 5L,2,2
+2025-06-25,Detergent 1kg,20,20
+2025-06-25,Milk Powder 400g,6,4
+2025-06-25,Rice 50kg,4,4
+2025-06-25,Soft Drinks (crate),14,14
+2025-06-25,Spaghetti (carton),9,9
+2025-06-25,Sugar 1kg,17,17
+2025-06-26,Bottled Water (crate),16,16
+2025-06-26,Cooking Oil 5L,8,8
+2025-06-26,Detergent 1kg,8,8
+2025-06-26,Milk Powder 400g,15,15
+2025-06-26,Rice 50kg,7,7
+2025-06-26,Soft Drinks (crate),2,2
+2025-06-26,Spaghetti (carton),3,3
+2025-06-26,Sugar 1kg,8,8
+2025-06-27,Bottled Water (crate),9,10
+2025-06-27,Cooking Oil 5L,20,20
+2025-06-27,Detergent 1kg,8,8
+2025-06-27,Milk Powder 400g,14,14
+2025-06-27,Soft Drinks (crate),6,6
+2025-06-27,Spaghetti (carton),5,5
+2025-06-27,Sugar 1kg,11,11
+2025-06-28,Bottled Water (crate),3,3
+2025-06-28,Cooking Oil 5L,19,19
+2025-06-28,Detergent 1kg,10,10
+2025-06-28,Milk Powder 400g,14,14
+2025-06-28,Rice 50kg,19,19
+2025-06-28,Soft Drinks (crate),5,5
+2025-06-28,Spaghetti (carton),9,9
+2025-06-28,Sugar 1kg,1,1
+2025-06-29,Bottled Water (crate),3,3
+2025-06-29,Cooking Oil 5L,20,20
+2025-06-29,Detergent 1kg,7,7
+2025-06-29,Milk Powder 400g,5,5
+2025-06-29,Rice 50kg,9,9
+2025-06-29,Soft Drinks (crate),14,14
+2025-06-29,Spaghetti (carton),3,3
+2025-06-29,Sugar 1kg,7,7
+2025-06-30,Bottled Water (crate),16,16
+2025-06-30,Cooking Oil 5L,1,1
+2025-06-30,Detergent 1kg,8,8
+2025-06-30,Milk Powder 400g,13,13
+2025-06-30,Rice 50kg,9,9
+2025-06-30,Soft Drinks (crate),8,8
+2025-06-30,Spaghetti (carton),12,12
+2025-06-30,Sugar 1kg,9,9

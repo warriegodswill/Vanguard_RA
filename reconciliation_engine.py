@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 from dataclasses import dataclass, field
 from datetime import timedelta
+from typing import Dict, Any
 from sklearn.ensemble import IsolationForest
 
 # Optional: Add OpenAI or Anthropic import if using API key
@@ -33,7 +34,7 @@ class ReconciliationResult:
     anomalies: pd.DataFrame
     ml_anomalies: pd.DataFrame = field(default_factory=pd.DataFrame)
     ai_summary: str = ""
-    summary: dict = field(default_factory=dict)
+    summary: Dict[str, Any] = field(default_factory=dict)
 
 
 class ReconciliationEngine:
@@ -42,21 +43,49 @@ class ReconciliationEngine:
         self.bank_df = bank_df.copy()
         self.inventory_df = inventory_df.copy()
 
+        # Schema Validation
+        self._validate_schemas()
+
+        # Datetime conversions
         self.pos_df["timestamp"] = pd.to_datetime(self.pos_df["timestamp"])
         self.bank_df["settlement_time"] = pd.to_datetime(self.bank_df["settlement_time"])
+
+    def _validate_schemas(self):
+        """Ensures required columns exist in input DataFrames."""
+        required_pos = {"txn_id", "amount", "payment_method", "timestamp"}
+        required_bank = {"bank_ref", "matched_txn_id", "amount", "settlement_time"}
+        required_inv = {"date", "product", "units_sold_pos", "units_depleted_inventory"}
+
+        missing_pos = required_pos - set(self.pos_df.columns)
+        missing_bank = required_bank - set(self.bank_df.columns)
+        missing_inv = required_inv - set(self.inventory_df.columns)
+
+        if missing_pos:
+            raise ValueError(f"pos_df missing required columns: {missing_pos}")
+        if missing_bank:
+            raise ValueError(f"bank_df missing required columns: {missing_bank}")
+        if missing_inv:
+            raise ValueError(f"inventory_df missing required columns: {missing_inv}")
 
     # ------------------------------------------------------------------
     # Stage 1: POS <-> Bank settlement reconciliation
     # ------------------------------------------------------------------
-    def _reconcile_settlements(self):
+    def _reconcile_settlements(self) -> pd.DataFrame:
         rows = []
         settleable_pos = self.pos_df[self.pos_df["payment_method"] != "Cash"]
-        bank_by_txn = self.bank_df.set_index("matched_txn_id")
+
+        # Aggregate bank transactions by matched_txn_id to handle split settlements cleanly
+        matched_bank = self.bank_df.dropna(subset=["matched_txn_id"])
+        bank_grouped = matched_bank.groupby("matched_txn_id").agg({
+            "amount": "sum",
+            "settlement_time": "max",
+            "bank_ref": "first"
+        })
 
         for _, pos_row in settleable_pos.iterrows():
             txn_id = pos_row["txn_id"]
 
-            if txn_id not in bank_by_txn.index:
+            if txn_id not in bank_grouped.index:
                 # No settlement found at all -> revenue leak
                 rows.append({
                     "txn_id": txn_id,
@@ -69,12 +98,12 @@ class ReconciliationEngine:
                 })
                 continue
 
-            bank_row = bank_by_txn.loc[txn_id]
-            if isinstance(bank_row, pd.DataFrame):
-                bank_row = bank_row.iloc[0]
+            bank_row = bank_grouped.loc[txn_id]
+            bank_amount = bank_row["amount"]
+            settlement_time = bank_row["settlement_time"]
 
-            diff = round(pos_row["amount"] - bank_row["amount"], 2)
-            delay_hrs = (bank_row["settlement_time"] - pos_row["timestamp"]).total_seconds() / 3600
+            diff = round(pos_row["amount"] - bank_amount, 2)
+            delay_hrs = (settlement_time - pos_row["timestamp"]).total_seconds() / 3600
 
             if abs(diff) > SETTLEMENT_SHORTFALL_TOLERANCE:
                 rows.append({
@@ -83,8 +112,8 @@ class ReconciliationEngine:
                     "reason": "Short settlement (possible fee skim / leakage)" if diff > 0
                               else "Bank amount exceeds POS amount",
                     "pos_amount": pos_row["amount"],
-                    "bank_amount": bank_row["amount"],
-                    "leaked_amount": max(diff, 0),
+                    "bank_amount": bank_amount,
+                    "leaked_amount": max(diff, 0.0),
                     "timestamp": pos_row["timestamp"],
                 })
             elif delay_hrs > SETTLEMENT_DELAY_ANOMALY_HOURS:
@@ -93,7 +122,7 @@ class ReconciliationEngine:
                     "type": "anomaly",
                     "reason": f"Settlement delayed {delay_hrs:.1f}h (> {SETTLEMENT_DELAY_ANOMALY_HOURS}h threshold)",
                     "pos_amount": pos_row["amount"],
-                    "bank_amount": bank_row["amount"],
+                    "bank_amount": bank_amount,
                     "leaked_amount": 0.0,
                     "timestamp": pos_row["timestamp"],
                 })
@@ -103,7 +132,7 @@ class ReconciliationEngine:
                     "type": "matched",
                     "reason": "Settled correctly",
                     "pos_amount": pos_row["amount"],
-                    "bank_amount": bank_row["amount"],
+                    "bank_amount": bank_amount,
                     "leaked_amount": 0.0,
                     "timestamp": pos_row["timestamp"],
                 })
@@ -126,7 +155,7 @@ class ReconciliationEngine:
     # ------------------------------------------------------------------
     # Stage 2: POS <-> Inventory reconciliation
     # ------------------------------------------------------------------
-    def _reconcile_inventory(self):
+    def _reconcile_inventory(self) -> pd.DataFrame:
         rows = []
         for _, row in self.inventory_df.iterrows():
             diff = row["units_depleted_inventory"] - row["units_sold_pos"]
@@ -135,7 +164,7 @@ class ReconciliationEngine:
                     "date": row["date"],
                     "product": row["product"],
                     "type": "leak",
-                    "reason": f"Inventory shrinkage: {diff} unit(s) unaccounted for",
+                    "reason": f"Inventory shrinkage: {int(diff)} unit(s) unaccounted for",
                     "units_sold_pos": row["units_sold_pos"],
                     "units_depleted_inventory": row["units_depleted_inventory"],
                 })
@@ -144,7 +173,7 @@ class ReconciliationEngine:
                     "date": row["date"],
                     "product": row["product"],
                     "type": "mismatch",
-                    "reason": f"Inventory under-recorded vs POS by {abs(diff)} unit(s)",
+                    "reason": f"Inventory under-recorded vs POS by {int(abs(diff))} unit(s)",
                     "units_sold_pos": row["units_sold_pos"],
                     "units_depleted_inventory": row["units_depleted_inventory"],
                 })
@@ -162,12 +191,13 @@ class ReconciliationEngine:
             return pd.DataFrame()
 
         feature_df = df.copy()
-        feature_df["pos_amount"] = feature_df["pos_amount"].fillna(0)
-        feature_df["bank_amount"] = feature_df["bank_amount"].fillna(0)
+        feature_df["pos_amount"] = feature_df["pos_amount"].fillna(0.0)
+        feature_df["bank_amount"] = feature_df["bank_amount"].fillna(0.0)
         
-        # Feature engineering
+        # Feature engineering with zero-division safeguard
         feature_df["amount_diff"] = (feature_df["pos_amount"] - feature_df["bank_amount"]).abs()
-        feature_df["diff_ratio"] = feature_df["amount_diff"] / (feature_df["pos_amount"] + 1e-5)
+        denom = feature_df[["pos_amount", "bank_amount"]].max(axis=1).replace(0, 1.0)
+        feature_df["diff_ratio"] = feature_df["amount_diff"] / denom
         
         features = ["pos_amount", "bank_amount", "amount_diff", "diff_ratio"]
         
@@ -187,13 +217,15 @@ class ReconciliationEngine:
         Generates a structured executive text narrative using rule logic or LLM.
         """
         top_reasons = leaks_df["reason"].value_counts().to_dict() if not leaks_df.empty else {}
+        primary_cause = list(top_reasons.keys())[0] if top_reasons else "N/A"
+        primary_count = list(top_reasons.values())[0] if top_reasons else 0
         
         insight = (
             f"**Executive Audit Summary:**\n"
             f"- **Financial Exposure:** Detected ₦{summary['total_leaked_amount']:,.2f} in total revenue leakage "
             f"({summary['leak_percentage']}% of POS Revenue) across {summary['n_leaks']} incidents.\n"
-            f"- **Primary Root Cause:** The highest contributing factor is '{list(top_reasons.keys())[0] if top_reasons else 'N/A'}' "
-            f"accounting for {list(top_reasons.values())[0] if top_reasons else 0} transactions.\n"
+            f"- **Primary Root Cause:** The highest contributing factor is '{primary_cause}' "
+            f"accounting for {primary_count} incidents.\n"
             f"- **Risk Recommendation:** Current risk score is **{summary['risk_score']}/100 ({summary['risk_band']} Risk)**. "
             f"Prioritize recovery on short-settled card transactions to recoup estimated ₦{summary['success_fee_estimate']:,.2f}."
         )
@@ -234,7 +266,7 @@ class ReconciliationEngine:
         summary = {
             "total_pos_revenue": round(total_pos_revenue, 2),
             "total_leaked_amount": round(total_leak_amount, 2),
-            "leak_percentage": round(100 * total_leak_amount / total_pos_revenue, 2) if total_pos_revenue else 0,
+            "leak_percentage": round(100 * total_leak_amount / total_pos_revenue, 2) if total_pos_revenue else 0.0,
             "n_matched": len(matched),
             "n_mismatches": len(mismatches),
             "n_leaks": len(leaks),
@@ -242,7 +274,7 @@ class ReconciliationEngine:
             "n_ml_anomalies": len(ml_anomalies),
             "risk_score": risk_score,
             "risk_band": self._risk_band(risk_score),
-            "success_fee_estimate": round(total_leak_amount * 0.25, 2),  # Updated to 25% match sidebar model
+            "success_fee_estimate": round(total_leak_amount * 0.25, 2),
         }
 
         ai_summary = self._generate_ai_summary(summary, leaks)
@@ -258,15 +290,15 @@ class ReconciliationEngine:
         )
 
     @staticmethod
-    def _compute_risk_score(total_leak_amount, total_pos_revenue, n_mismatches, n_anomalies):
-        leak_rate = (total_leak_amount / total_pos_revenue) if total_pos_revenue else 0
+    def _compute_risk_score(total_leak_amount: float, total_pos_revenue: float, n_mismatches: int, n_anomalies: int) -> float:
+        leak_rate = (total_leak_amount / total_pos_revenue) if total_pos_revenue else 0.0
         leak_component = min(leak_rate * 100 * 4, 60)          # up to 60 pts
         mismatch_component = min(n_mismatches * 2, 25)          # up to 25 pts
         anomaly_component = min(n_anomalies * 1.5, 15)          # up to 15 pts
         return round(leak_component + mismatch_component + anomaly_component, 1)
 
     @staticmethod
-    def _risk_band(score):
+    def _risk_band(score: float) -> str:
         if score < 20:
             return "Low"
         elif score < 50:

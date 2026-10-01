@@ -35,9 +35,9 @@ ALIASES = {
     "timestamp": ["date", "time", "datetime", "transaction date"],
     "amount": ["amount", "value", "total"],
     "payment_method": ["payment method", "method", "channel"],
-    "bank_ref": ["bank reference", "ref", "reference"],
-    "matched_txn_id": ["transaction id", "txn id", "matching id"],
-    "settlement_time": ["settlement date", "settled on", "value date"],
+    "bank_ref": ["bank reference", "ref", "reference", "bank_ref"],
+    "matched_txn_id": ["transaction id", "txn id", "matching id", "matched_txn_id"],
+    "settlement_time": ["settlement date", "settled on", "value date", "settlement_time"],
     "date": ["date", "day"],
     "product": ["product", "item", "sku", "name", "description"],
     "units_sold_pos": ["sold", "qty sold", "quantity sold", "pos qty"],
@@ -75,21 +75,35 @@ def map_columns_ui(uploaded_df: pd.DataFrame, file_type: str) -> pd.DataFrame | 
                 key=f"{file_type}_{field_key}_mapper",
             )
 
+        # 1. Check for unselected fields
         missing = [k for k, v in mapping.items() if v == "-- none --"]
         if missing:
             st.warning(f"Still need to map: {', '.join(missing)}")
             return None
 
-        renamed = uploaded_df.rename(columns={v: k for k, v in mapping.items()})
+        # 2. Check for duplicate column selections
+        selected_cols = [v for v in mapping.values() if v != "-- none --"]
+        if len(selected_cols) != len(set(selected_cols)):
+            st.error("Duplicate mapping detected: Each required field must map to a unique column in your CSV.")
+            return None
+
+        # 3. Perform safe renaming and column duplication if necessary
+        renamed_df = pd.DataFrame()
+        for target_col, source_col in mapping.items():
+            if source_col in uploaded_df.columns:
+                renamed_df[target_col] = uploaded_df[source_col]
+
+        # 4. Use reindex to guarantee no KeyError is thrown
+        final_df = renamed_df.reindex(columns=list(required_fields.keys()))
+
         st.success(f"{file_type.upper()} columns mapped successfully.")
-        return renamed[list(required_fields.keys())]
+        return final_df
 
 
 def validate_schema(df: pd.DataFrame, file_type: str) -> list[str]:
     errors = []
     numeric_fields = {"amount", "units_sold_pos", "units_depleted_inventory"}
     date_fields = {"timestamp", "settlement_time", "date"}
-    
     nullable_fields = {"matched_txn_id"}
 
     for col in df.columns:
